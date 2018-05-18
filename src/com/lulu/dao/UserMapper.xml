@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lulu.dao.UserMapper">
+ 
+ 	<!-- //根据用户名查询 是否存在该用户 -->
+	<select id="getByUserName" parameterType="java.lang.String" resultType="User">
+		select * from user where username=#{username}
+	</select>
+	
+	<!-- //根据表单数据内容，添加用户信息 -->
+	<insert id="addUser" parameterType="User">
+	insert into user(username,password,name,email,phone,gender,birthday,addr,state,code) 
+	values(#{username},#{password},#{name},#{email},#{phone},#{gender},#{birthday},#{addr},0,#{code})
+	</insert>
+	
+	<!-- //更新用户的激活状态 -->
+	<update id="activeUser" parameterType="java.lang.String">
+	update user set state=1,code=null where code=#{code}
+	</update>
+	
+	<!-- //登陆用户，查询用户的state是否激活 -->
+	<select id="getUserName" parameterType="java.lang.String" resultType="User">
+	select * from user where username=#{username} and state=1 and code is null
+	</select>
+	
+	<!-- //登陆用户，查询用户和密码是否匹配 -->
+	<select id="getUsernameAndPassword" resultType="User">
+	select * from user where username=#{username} and password=#{password}
+	</select>
+	
+	<update id="updatePwdByUsername" >
+	update user set password=#{password} where username=#{username}
+	</update>
+</mapper>

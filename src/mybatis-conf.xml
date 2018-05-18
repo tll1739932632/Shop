@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>                            
+   <!-- 1别名  以后在Mapper.xml文件里面
+            com.lulu.model中所有的类都可以直接写 类名了  -->
+   <typeAliases>
+      <package name="com.lulu.model"/>
+   </typeAliases>
+</configuration>

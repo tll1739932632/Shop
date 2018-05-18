@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lulu.dao.ProductMapper">
+	
+	<!-- //查询一级菜单并显示在页面 -->
+	<select id="getCategorys" resultType="Category">
+	select * from category
+	</select>
+	
+	<!-- //查询热门商品并显示在页面上 -->
+	<select id="getHotProducts" resultType="Product">
+	select * from product where is_hot=1 limit 0,10
+	</select>
+	
+	<!-- //查询最新商品并显示在页面上 -->
+	<select id="getNewProducts" resultType="Product">
+	select * from product order by pdate desc limit 0,10
+	</select>
+	
+	<!-- //根据一级菜单查询二级菜单 -->
+	<select id="getSeByCid" parameterType="int" resultType="Categorysecond">
+	SELECT * FROM categorysecond WHERE cid=#{cid}
+	</select>
+	
+	<!-- //根据一级菜单查询商品信息,并分页显示 -->
+	<select id="getProductByCid"  resultType="Product">
+	select * FROM  product where csid in (select csid FROM categorysecond WHERE cid=#{cid}) 
+	limit #{beginIndex},#{pageSize}
+	</select>
+	
+	<!-- //根据二级菜单查询商品信息，并分页显示 -->
+	<select id="getProductByCsid"  resultType="Product">
+	select * FROM  product where csid=#{csid}
+	limit #{beginIndex},#{pageSize}
+	</select>
+	
+	<!-- //根据一级菜单查询商品信息的总数量 -->
+	<select id="getCountByCid" parameterType="int" resultType="int">
+	select count(*) FROM  product where csid in (select csid FROM categorysecond WHERE cid=#{cid})
+	</select>
+	
+	
+	<!-- //根据二级菜单查询商品信息的总数量 -->
+	<select id="getCountByCsid" parameterType="int" resultType="int">
+	select count(*) FROM  product where csid=#{csid}
+	</select>
+
+	<!-- //根据pid查询某一个商品 -->
+	<select id="getInfoByPid" parameterType="int" resultType="Product">
+	select * FROM  product where pid=#{pid}
+	</select>
+	
+	
+	<!-- //添加数据到购物车 -->
+	<insert id="insertProductToCart" parameterType="Cart">
+	insert into cart(cart_id,pid,image,pname,price,count,date,username) values(
+					#{cart_id},#{pid},#{image},#{pname},#{price},#{count},#{date},#{username})
+	</insert>
+	
+	<!-- 查看购物车 -->
+	<select id="getCartByUsername" parameterType="java.lang.String" resultType="Cart">
+	select * from cart where username=#{username} order by date desc
+	</select>
+	
+	<!-- //查看购物车商品是否重复 -->
+	<select id="getIsHavedByPid" parameterType="int" resultType="Cart">
+	select * from cart where pid=#{pid}
+	</select>
+	
+	<!-- //更新购物车重复的值 增加数量 -->
+	<update id="updateCartByPid" >
+	update cart set count=(count+#{count}) where pid=#{pid}
+	</update>
+	<!--  清空购物车-->
+	<delete id="removeCart" parameterType="java.lang.String">
+	delete from cart where username=#{username}
+	</delete>
+	
+	<!-- 删除某一条信息 -->
+	<delete id="deleteCartByPid" parameterType="int">
+	delete from cart where pid=#{pid}
+	</delete>
+	
+	<insert id="submitOrder" parameterType="Orders">
+	insert into orders(oid,total,ordertime,payway,name,phone,addr,username) values(
+	#{oid},#{total},#{ordertime},#{payway},#{name},#{phone},#{addr},#{username})
+	</insert>
+
+
+
+
+</mapper>
